@@ -343,68 +343,305 @@
   </div>
 
   <script>
-    const tempoQuestions = [
-      {
-        story: "Em 2020, o mundo enfrentou a pandemia do coronavírus, com mudanças na escola, no trabalho e no dia a dia das pessoas.",
-        question: "Esse acontecimento representa principalmente qual tipo de tempo?",
-        options: ["Tempo Histórico", "Tempo Cronológico"],
-        answer: 0,
-        explanation: "Embora envolva o ano de 2020, o foco é o impacto social, cultural e humano vivido pelas sociedades — característica do Tempo Histórico."
+    const modes = {
+      tempo: {
+        label: "⏳ Jogo do Tempo",
+        questions: [
+          {
+            story: "Em 2020, o mundo enfrentou a pandemia do coronavírus, com mudanças na escola, no trabalho e no dia a dia das pessoas.",
+            question: "Esse acontecimento representa principalmente qual tipo de tempo?",
+            options: ["Tempo Histórico", "Tempo Cronológico"],
+            answer: 0,
+            explanation: "Embora envolva o ano de 2020, o foco é o impacto social, cultural e humano vivido pelas sociedades — característica do Tempo Histórico."
+          },
+          {
+            story: "Um relógio digital marca exatamente 14h30min durante uma aula de ciências.",
+            question: "A marcação das horas e minutos no relógio é um exemplo de:",
+            options: ["Tempo Cronológico", "Tempo Histórico"],
+            answer: 0,
+            explanation: "O tempo cronológico mede a duração e a sequência exata por meio de relógios e calendários (segundos, minutos, horas, dias, anos)."
+          },
+          {
+            story: "Há cerca de 66 milhões de anos, um grande evento contribuiu para a extinção da maioria dos dinossauros não aviários.",
+            question: "Como podemos classificar esse recorte de tempo?",
+            options: ["Tempo Cronológico (escala de milhões de anos)", "Tempo Histórico"],
+            answer: 0,
+            explanation: "A contagem de milhões de anos pertence à medição cronológica/geológica do tempo, anterior à escrita e à história humana."
+          },
+          {
+            story: "A chegada das máquinas a vapor e das fábricas no século XVIII mudou o ritmo de trabalho e o crescimento das cidades.",
+            question: "Qual tempo está em destaque nessa transformação?",
+            options: ["Tempo Histórico", "Tempo Cronológico"],
+            answer: 0,
+            explanation: "A Revolução Industrial transformou modos de produzir, viver e se organizar em sociedade — um marco clássico do Tempo Histórico."
+          },
+          {
+            story: "Um ano bissexto tem 366 dias porque fevereiro ganha o dia 29 no calendário.",
+            question: "Essa regra do calendário refere-se ao:",
+            options: ["Tempo Cronológico", "Tempo Histórico"],
+            answer: 0,
+            explanation: "Calendários, dias, meses e anos bissextos são formas de organizar e medir o Tempo Cronológico."
+          },
+          {
+            story: "Em 1500, expedições marítimas portuguesas chegaram ao território que hoje corresponde ao Brasil.",
+            question: "Além da data 1500, o encontro entre povos indígenas e portugueses marca o:",
+            options: ["Tempo Histórico", "Apenas contagem de segundos"],
+            answer: 0,
+            explanation: "O ano de 1500 é um dado cronológico, mas o processo de contato, conflitos e transformações culturais define o Tempo Histórico."
+          }
+        ]
       },
-      {
-        story: "Um relógio digital marca exatamente 14h30min durante uma aula de ciências.",
-        question: "A marcação das horas e minutos no relógio é um exemplo de:",
-        options: ["Tempo Cronológico", "Tempo Histórico"],
-        answer: 0,
-        explanation: "O tempo cronológico mede a duração e a sequência exata por meio de relógios e calendários (segundos, minutos, horas, dias, anos)."
+      matematica: {
+        label: "➗ Desafio de Matemática",
+        questions: [
+          {
+            question: "Quanto é 8 × 7?",
+            options: ["56", "54", "64", "48"],
+            answer: 0,
+            explanation: "8 vezes 7 é igual a 56."
+          },
+          {
+            question: "Qual é o resultado de 96 ÷ 8?",
+            options: ["12", "14", "11", "16"],
+            answer: 0,
+            explanation: "8 × 12 = 96, portanto 96 dividido por 8 é 12."
+          },
+          {
+            question: "Quanto é metade de 150 mais 25?",
+            options: ["100", "90", "110", "85"],
+            answer: 0,
+            explanation: "Metade de 150 é 75, e 75 + 25 = 100."
+          },
+          {
+            question: "Em uma pizza dividida em 8 fatias iguais, se você come 3 fatias, qual fração representa o que você comeu?",
+            options: ["3/8", "8/3", "3/5", "5/8"],
+            answer: 0,
+            explanation: "São 3 partes consumidas de um total de 8 partes iguais: 3/8."
+          },
+          {
+            question: "Se uma caixa tem 6 pacotes com 12 figurinhas cada, quantas figurinhas há ao todo?",
+            options: ["72", "68", "84", "64"],
+            answer: 0,
+            explanation: "6 × 12 = 72 figurinhas."
+          }
+        ]
       },
-      {
-        story: "Há cerca de 66 milhões de anos, um grande evento contribuiu para a extinção da maioria dos dinossauros não aviários.",
-        question: "Como podemos classificar esse recorte de tempo?",
-        options: ["Tempo Cronológico (escala de milhões de anos)", "Tempo Histórico"],
-        answer: 0,
-        explanation: "A contagem de milhões de anos pertence à medição cronológica/geológica do tempo, anterior à escrita e à história humana."
+      portugues: {
+        label: "📚 Quiz de Português",
+        questions: [
+          {
+            question: "Qual palavra está escrita corretamente segundo a norma culta?",
+            options: ["Exceção", "Excessão", "Eceção", "Exseção"],
+            answer: 0,
+            explanation: "A grafia correta é 'exceção', com 'x' e 'ç'."
+          },
+          {
+            question: "Em qual frase o uso de 'por que' está correto?",
+            options: [
+              "Você sabe por que o jogo começou tarde?",
+              "Não fui à aula por que estava chovendo.",
+              "Quero saber o por que da demora.",
+              "Cheguei atrasado, por que?"
+            ],
+            answer: 0,
+            explanation: "Usa-se 'por que' separado e sem acento em perguntas diretas ou indiretas (equivalente a 'por qual motivo')."
+          },
+          {
+            question: "Qual das palavras abaixo é uma proparoxítona?",
+            options: ["Lâmpada", "Café", "Sofá", "Caderno"],
+            answer: 0,
+            explanation: "'Lâm-pa-da' tem a antepenúltima sílaba tônica, sendo portanto uma proparoxítona."
+          },
+          {
+            question: "Na frase 'Os alunos estudaram bastante para a prova', qual é o verbo?",
+            options: ["estudaram", "alunos", "bastante", "prova"],
+            answer: 0,
+            explanation: "'Estudaram' é a palavra que expressa a ação realizada pelo sujeito."
+          },
+          {
+            question: "Qual palavra completa corretamente: 'Ele não ___ à reunião ontem'?",
+            options: ["veio", "veiu", "veioo", "veioi"],
+            answer: 0,
+            explanation: "A forma correta do verbo vir no pretérito perfeito do indicativo (3ª pessoa do singular) é 'veio'."
+          }
+        ]
       },
-      {
-        story: "A chegada das máquinas a vapor e das fábricas no século XVIII mudou o ritmo de trabalho e o crescimento das cidades.",
-        question: "Qual tempo está em destaque nessa transformação?",
-        options: ["Tempo Histórico", "Tempo Cronológico"],
-        answer: 0,
-        explanation: "A Revolução Industrial transformou modos de produzir, viver e se organizar em sociedade — um marco clássico do Tempo Histórico."
-      },
-      {
-        story: "Um ano bissexto tem 366 dias porque fevereiro ganha o dia 29 no calendário.",
-        question: "Essa regra do calendário refere-se ao:",
-        options: ["Tempo Cronológico", "Tempo Histórico"],
-        answer: 0,
-        explanation: "Calendários, dias, meses e anos bissextos são formas de organizar e medir o Tempo Cronológico."
-      },
-      {
-        story: "Em 1500, expedições marítimas portuguesas chegaram ao território que hoje corresponde ao Brasil.",
-        question: "Além da data 1500, o encontro entre povos indígenas e portugueses marca o:",
-        options: ["Tempo Histórico", "Apenas contagem de segundos"],
-        answer: 0,
-        explanation: "O ano de 1500 é um dado cronológico, mas o processo de contato, conflitos e transformações culturais define o Tempo Histórico."
+      historia: {
+        label: "🏛️ Jornada de História",
+        questions: [
+          {
+            question: "Qual civilização antiga ficou conhecida pelas pirâmides e pelo rio Nilo?",
+            options: ["Egípcia", "Asteca", "Viking", "Maia"],
+            answer: 0,
+            explanation: "A civilização do Antigo Egito desenvolveu-se às margens do rio Nilo e construiu as pirâmides."
+          },
+          {
+            question: "O que foi a escrita cuneiforme na Mesopotâmia?",
+            options: [
+              "Um dos sistemas de escrita mais antigos, feito em tábuas de argila",
+              "Um alfabeto criado apenas na Idade Contemporânea",
+              "Um código usado apenas para navegação marítima",
+              "Uma moeda usada no Império Romano"
+            ],
+            answer: 0,
+            explanation: "A escrita cuneiforme surgiu na Mesopotâmia com marcas em forma de cunha em argila."
+          },
+          {
+            question: "Qual período histórico é tradicionalmente marcado pela queda do Império Romano do Ocidente (476 d.C.)?",
+            options: ["Início da Idade Média", "Início da Idade Contemporânea", "Pré-História", "Renascimento"],
+            answer: 0,
+            explanation: "A queda do Império Romano do Ocidente em 476 d.C. marca convencionalmente o fim da Antiguidade e o início da Idade Média."
+          },
+          {
+            question: "Qual foi o papel da agricultura na chamada Revolução Neolítica?",
+            options: [
+              "Permitiu a fixação de comunidades e o cultivo de alimentos",
+              "Eliminou o uso de ferramentas de pedra e cerâmica",
+              "Substituiu todas as cidades por nômades",
+              "Criou as viagens espaciais"
+            ],
+            answer: 0,
+            explanation: "Com a agricultura e a domesticação de animais, os grupos humanos passaram a se fixar mais e formar aldeias e cidades."
+          }
+        ]
       }
-    ];
+    };
 
-    const portuguesQuestions = [
-      {
-        question: "Qual palavra está escrita corretamente segundo a norma culta?",
-        options: ["Exceção", "Excessão", "Eceção", "Exseção"],
-        answer: 0,
-        explanation: "A grafia correta é 'exceção', com 'x' e 'ç'."
-      },
-      {
-        question: "Em qual frase o uso de 'por que' está correto?",
-        options: [
-          "Você sabe por que o jogo começou tarde?",
-          "Não fui à aula por que estava chovendo.",
-          "Quero saber o por que da demora.",
-          "Cheguei atrasado, por que?"
-        ],
-        answer: 0,
-        explanation: "Usa-se 'por que' separado e sem acento em perguntas diretas ou indiretas (equivalente a 'por qual motivo')."
-      },
-      {
-        question: "Qual das palavras abaixo é uma proparoxítona?",
+    let currentModeKey = null;
+    let questionQueue = [];
+    let currentIndex = 0;
+    let score = 0;
+    let streak = 0;
+
+    const menuEl = document.getElementById("menu");
+    const gameEl = document.getElementById("game");
+    const modeLabelEl = document.getElementById("mode-label");
+    const storyBoxEl = document.getElementById("story-box");
+    const questionTextEl = document.getElementById("question-text");
+    const optionsEl = document.getElementById("options");
+    const feedbackEl = document.getElementById("feedback");
+    const feedbackTitleEl = document.getElementById("feedback-title");
+    const feedbackTextEl = document.getElementById("feedback-text");
+    const btnNextEl = document.getElementById("btn-next");
+    const scoreEl = document.getElementById("score");
+    const streakEl = document.getElementById("streak");
+
+    function updateStats() {
+      scoreEl.textContent = score;
+      streakEl.textContent = streak;
+    }
+
+    function shuffleArray(list) {
+      const copy = [...list];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function startMode(modeKey) {
+      const selectedMode = modes[modeKey];
+      if (!selectedMode) return;
+
+      currentModeKey = modeKey;
+      questionQueue = shuffleArray(selectedMode.questions);
+      currentIndex = 0;
+
+      modeLabelEl.textContent = selectedMode.label;
+      menuEl.classList.add("hidden");
+      gameEl.classList.remove("hidden");
+
+      renderQuestion();
+    }
+
+    function backToMenu() {
+      gameEl.classList.add("hidden");
+      menuEl.classList.remove("hidden");
+      feedbackEl.classList.remove("show", "ok", "no");
+      btnNextEl.classList.add("hidden");
+    }
+
+    function renderQuestion() {
+      feedbackEl.classList.remove("show", "ok", "no");
+      btnNextEl.classList.add("hidden");
+      optionsEl.innerHTML = "";
+
+      if (currentIndex >= questionQueue.length) {
+        storyBoxEl.classList.add("hidden");
+        questionTextEl.textContent = "Fim desta rodada! Quer jogar novamente ou escolher outro modo?";
+
+        const playAgainBtn = document.createElement("button");
+        playAgainBtn.className = "option-btn";
+        playAgainBtn.textContent = "🔄 Jogar este modo novamente";
+        playAgainBtn.onclick = () => startMode(currentModeKey);
+
+        const menuBtn = document.createElement("button");
+        menuBtn.className = "option-btn";
+        menuBtn.textContent = "🏠 Voltar ao menu principal";
+        menuBtn.onclick = backToMenu;
+
+        optionsEl.appendChild(playAgainBtn);
+        optionsEl.appendChild(menuBtn);
+        return;
+      }
+
+      const item = questionQueue[currentIndex];
+
+      if (item.story) {
+        storyBoxEl.textContent = item.story;
+        storyBoxEl.classList.remove("hidden");
+      } else {
+        storyBoxEl.classList.add("hidden");
+      }
+
+      questionTextEl.textContent = `(${currentIndex + 1}/${questionQueue.length}) ${item.question}`;
+
+      item.options.forEach((optText, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.textContent = optText;
+        btn.onclick = () => handleAnswer(idx, btn);
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function handleAnswer(selectedIdx, clickedBtn) {
+      const item = questionQueue[currentIndex];
+      const allOptionBtns = optionsEl.querySelectorAll(".option-btn");
+
+      allOptionBtns.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === item.answer) {
+          btn.classList.add("correct");
+        }
+      });
+
+      const isCorrect = selectedIdx === item.answer;
+
+      if (isCorrect) {
+        score += 10;
+        streak += 1;
+        feedbackEl.classList.add("show", "ok");
+        feedbackTitleEl.textContent = "✅ Resposta correta! (+10 pontos)";
+      } else {
+        streak = 0;
+        clickedBtn.classList.add("wrong");
+        feedbackEl.classList.add("show", "no");
+        feedbackTitleEl.textContent = "💡 Quase lá! Veja a explicação:";
+      }
+
+      updateStats();
+      feedbackTextEl.textContent = item.explanation;
+      btnNextEl.classList.remove("hidden");
+    }
+
+    function nextQuestion() {
+      currentIndex += 1;
+      renderQuestion();
+    }
+
+    updateStats();
+  </script>
+</body>
+</html>
