@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aventura do Saber — Tempo, Matemática, Português e História</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --ink: #1e293b;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --accent: #7c3aed;
+      --success: #16a34a;
+      --success-bg: #dcfce7;
+      --error: #dc2626;
+      --error-bg: #fee2e2;
+      --warning: #d97706;
+      --warning-bg: #fef3c7;
+      --border: #e2e8f0;
+      --shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(160deg, #eff6ff 0%, #f8fafc 45%, #f3e8ff 100%);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 16px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .brand h1 {
+      font-size: 1.5rem;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand p {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: 2px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .badge span {
+      color: var(--primary);
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .mode-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      text-align: left;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+    }
+
+    .mode-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      box-shadow: var(--shadow);
+    }
+
+    .mode-card .icon {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .mode-card h2 {
+      font-size: 1.08rem;
+      margin-bottom: 4px;
+    }
+
+    .mode-card p {
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
+    .game-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .game-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .mode-tag {
+      background: #e0e7ff;
+      color: #1e40af;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+
+    .btn-back {
+      background: #f1f5f9;
+      color: var(--ink);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 7px 12px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-back:hover {
+      background: #e2e8f0;
+    }
+
+    .story-box {
+      background: #f8fafc;
+      border-left: 4px solid var(--accent);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      font-size: 1.02rem;
+    }
+
+    .question-text {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 16px;
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--primary);
+      background: #eff6ff;
+    }
+
+    .option-btn:disabled {
+      cursor: default;
+      opacity: 0.92;
+    }
+
+    .option-btn.correct {
+      background: var(--success-bg);
+      border-color: var(--success);
+      color: #14532d;
+    }
+
+    .option-btn.wrong {
+      background: var(--error-bg);
+      border-color: var(--error);
+      color: #7f1d1d;
+    }
+
+    .feedback {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      display: none;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback.ok {
+      background: var(--success-bg);
+      border: 1px solid #86efac;
+      color: #14532d;
+    }
+
+    .feedback.no {
+      background: var(--warning-bg);
+      border: 1px solid #fcd34d;
+      color: #78350f;
+    }
+
+    .feedback strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 1rem;
+    }
+
+    .next-row {
+      margin-top: 16px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-next {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 11px 20px;
+      font-size: 0.98rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-next:hover {
+      background: var(--primary-dark);
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <h1><span>🧭</span> Aventura do Saber</h1>
+        <p>Escolha um modo de jogo e teste seus conhecimentos</p>
+      </div>
+      <div class="stats">
+        <div class="badge">Pontos: <span id="score">0</span></div>
+        <div class="badge">Acertos: <span id="streak">0</span></div>
+      </div>
+    </header>
+
+    <section id="menu" class="menu-grid">
+      <button class="mode-card" onclick="startMode('tempo')">
+        <span class="icon">⏳</span>
+        <h2>Jogo do Tempo</h2>
+        <p>Histórias com datas e épocas para descobrir se é tempo cronológico ou histórico.</p>
+      </button>
+
+      <button class="mode-card" onclick="startMode('matematica')">
+        <span class="icon">➗</span>
+        <h2>Desafio de Matemática</h2>
+        <p>Contas de multiplicação, divisão, frações e desafios rápidos.</p>
+      </button>
+
+      <button class="mode-card" onclick="startMode('portugues')">
+        <span class="icon">📚</span>
+        <h2>Quiz de Português</h2>
+        <p>Ortografia, acentuação, classes de palavras, verbos e porquês.</p>
+      </button>
+
+      <button class="mode-card" onclick="startMode('historia')">
+        <span class="icon">🏛️</span>
+        <h2>Jornada de História</h2>
+        <p>Conquistas, impérios, civilizações antigas e transformações humanas.</p>
+      </button>
+    </section>
+
+    <section id="game" class="game-box hidden">
+      <div class="game-top">
+        <span id="mode-label" class="mode-tag">Modo</span>
+        <button class="btn-back" onclick="backToMenu()">← Voltar ao menu</button>
+      </div>
+
+      <div id="story-box" class="story-box hidden"></div>
+      <div id="question-text" class="question-text"></div>
+      <div id="options" class="options"></div>
+
+      <div id="feedback" class="feedback">
+        <strong id="feedback-title"></strong>
+        <p id="feedback-text"></p>
+      </div>
+
+      <div class="next-row">
+        <button id="btn-next" class="btn-next hidden" onclick="nextQuestion()">Próxima pergunta →</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const tempoQuestions = [
+      {
+        story: "Em 2020, o mundo enfrentou a pandemia do coronavírus, com mudanças na escola, no trabalho e no dia a dia das pessoas.",
+        question: "Esse acontecimento representa principalmente qual tipo de tempo?",
+        options: ["Tempo Histórico", "Tempo Cronológico"],
+        answer: 0,
+        explanation: "Embora envolva o ano de 2020, o foco é o impacto social, cultural e humano vivido pelas sociedades — característica do Tempo Histórico."
+      },
+      {
+        story: "Um relógio digital marca exatamente 14h30min durante uma aula de ciências.",
+        question: "A marcação das horas e minutos no relógio é um exemplo de:",
+        options: ["Tempo Cronológico", "Tempo Histórico"],
+        answer: 0,
+        explanation: "O tempo cronológico mede a duração e a sequência exata por meio de relógios e calendários (segundos, minutos, horas, dias, anos)."
+      },
+      {
+        story: "Há cerca de 66 milhões de anos, um grande evento contribuiu para a extinção da maioria dos dinossauros não aviários.",
+        question: "Como podemos classificar esse recorte de tempo?",
+        options: ["Tempo Cronológico (escala de milhões de anos)", "Tempo Histórico"],
+        answer: 0,
+        explanation: "A contagem de milhões de anos pertence à medição cronológica/geológica do tempo, anterior à escrita e à história humana."
+      },
+      {
+        story: "A chegada das máquinas a vapor e das fábricas no século XVIII mudou o ritmo de trabalho e o crescimento das cidades.",
+        question: "Qual tempo está em destaque nessa transformação?",
+        options: ["Tempo Histórico", "Tempo Cronológico"],
+        answer: 0,
+        explanation: "A Revolução Industrial transformou modos de produzir, viver e se organizar em sociedade — um marco clássico do Tempo Histórico."
+      },
+      {
+        story: "Um ano bissexto tem 366 dias porque fevereiro ganha o dia 29 no calendário.",
+        question: "Essa regra do calendário refere-se ao:",
+        options: ["Tempo Cronológico", "Tempo Histórico"],
+        answer: 0,
+        explanation: "Calendários, dias, meses e anos bissextos são formas de organizar e medir o Tempo Cronológico."
+      },
+      {
+        story: "Em 1500, expedições marítimas portuguesas chegaram ao território que hoje corresponde ao Brasil.",
+        question: "Além da data 1500, o encontro entre povos indígenas e portugueses marca o:",
+        options: ["Tempo Histórico", "Apenas contagem de segundos"],
+        answer: 0,
+        explanation: "O ano de 1500 é um dado cronológico, mas o processo de contato, conflitos e transformações culturais define o Tempo Histórico."
+      }
+    ];
+
+    const portuguesQuestions = [
+      {
+        question: "Qual palavra está escrita corretamente segundo a norma culta?",
+        options: ["Exceção", "Excessão", "Eceção", "Exseção"],
+        answer: 0,
+        explanation: "A grafia correta é 'exceção', com 'x' e 'ç'."
+      },
+      {
+        question: "Em qual frase o uso de 'por que' está correto?",
+        options: [
+          "Você sabe por que o jogo começou tarde?",
+          "Não fui à aula por que estava chovendo.",
+          "Quero saber o por que da demora.",
+          "Cheguei atrasado, por que?"
+        ],
+        answer: 0,
+        explanation: "Usa-se 'por que' separado e sem acento em perguntas diretas ou indiretas (equivalente a 'por qual motivo')."
+      },
+      {
+        question: "Qual das palavras abaixo é uma proparoxítona?",
