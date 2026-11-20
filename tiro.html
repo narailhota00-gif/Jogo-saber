@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Zona de Fogo — BR & CS</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --panel: rgba(15, 23, 42, 0.88);
+      --panel-border: rgba(148, 163, 184, 0.22);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #f97316;
+      --accent-2: #38bdf8;
+      --danger: #ef4444;
+      --ok: #22c55e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      touch-action: none;
+    }
+
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(30, 41, 59, 0.72), rgba(2, 6, 23, 0.94));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 20;
+      overflow-y: auto;
+    }
+
+    .overlay.hidden {
+      display: none;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 540px;
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(10px);
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      letter-spacing: 0.4px;
+      color: #fff;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(249, 115, 22, 0.2);
+      color: #fdba74;
+      border: 1px solid rgba(249, 115, 22, 0.45);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-bottom: 16px;
+    }
+
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      margin-top: 12px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .choice-btn {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1.5px solid var(--panel-border);
+      border-radius: 14px;
+      padding: 11px 10px;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.86rem;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+    }
+
+    .choice-btn small {
+      display: block;
+      font-weight: 500;
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .choice-btn.active {
+      border-color: var(--accent);
+      background: rgba(249, 115, 22, 0.2);
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.35);
+    }
+
+    .skin-swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      margin: 0 auto 5px;
+      border: 2px solid rgba(255, 255, 255, 0.65);
+    }
+
+    .slider-box {
+      background: rgba(30, 41, 59, 0.72);
+      border: 1px solid var(--panel-border);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+
+    .slider-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.86rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+      background: rgba(30, 41, 59, 0.72);
+      border: 1px solid var(--panel-border);
+      border-radius: 14px;
+      padding: 11px 14px;
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+
+    .play-btn {
+      width: 100%;
+      margin-top: 16px;
+      padding: 14px;
+      border: none;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 12px 28px rgba(234, 88, 12, 0.4);
+    }
+
+    /* HUD */
+    .hud {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .hud.hidden {
+      display: none;
+    }
+
+    .top-bar {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .hud-pill {
+      background: rgba(15, 23, 42, 0.76);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 12px;
+      padding: 7px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      backdrop-filter: blur(6px);
+    }
+
+    .hud-actions {
+      display: flex;
+      gap: 6px;
+      pointer-events: auto;
+    }
+
+    .mini-btn {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: #fff;
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .bottom-left-bars {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(320px, 56vw);
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 14px;
+      padding: 8px 12px;
+    }
+
+    .bar-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .hp-track {
+      width: 100%;
+      height: 9px;
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .hp-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #22c55e, #84cc16);
+      transition: width 0.12s linear;
+    }
+
+    /* Controles Touch */
+    .joy-zone {
+      position: absolute;
+      left: 18px;
+      bottom: 24px;
+      width: 132px;
+      height: 132px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.42);
+      border: 1.5px solid rgba(255, 255, 255, 0.22);
+      pointer-events: auto;
+    }
+
+    .joy-knob {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 52px;
+      height: 52px;
+      margin-left: -26px;
+      margin-top: -26px;
+      border-radius: 50%;
+      background: rgba(248, 250, 252, 0.72);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    }
+
+    .action-cluster {
+      position: absolute;
+      right: 18px;
+      bottom: 24px;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      pointer-events: auto;
+    }
+
+    .sub-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .touch-btn {
+      border: none;
+      color: #fff;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .btn-small {
+      width: 56px;
+      height: 44px;
+      border-radius: 14px;
+      font-size: 0.72rem;
+      background: rgba(30, 41, 59, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-fire {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      font-size: 0.92rem;
+      background: radial-gradient(circle at 35% 30%, #fb7185, #dc2626);
+      border: 2px solid rgba(255, 255, 255, 0.45);
+    }
+
+    .btn-fire:active, .btn-small:active {
+      transform: scale(0.94);
+    }
+
+    .toast {
+      position: fixed;
+      top: 56px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(249, 115, 22, 0.5);
+      color: #fed7aa;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      z-index: 15;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas"></canvas>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="hud" class="hud hidden">
+    <div class="top-bar">
+      <div class="hud-pill" id="hudStatus">MODO BR • VIVOS: 8 • ABATES: 0</div>
+      <div class="hud-actions">
+        <button class="mini-btn" id="btnSenseQuick">Sense: 100%</button>
+        <button class="mini-btn" id="btnMenu">Menu</button>
+      </div>
+    </div>
+
+    <div class="bottom-left-bars">
+      <div class="bar-line">
+        <span id="hpLabel">VIDA 100</span>
+        <span id="ammoLabel">MUNIÇÃO 30/30 • RIFLE</span>
+      </div>
+      <div class="hp-track">
+        <div id="hpFill" class="hp-fill"></div>
+      </div>
+    </div>
+
+    <div id="joyZone" class="joy-zone">
+      <div id="joyKnob" class="joy-knob"></div>
+    </div>
+
+    <div class="action-cluster">
+      <div class="sub-btns">
+        <button class="touch-btn btn-small" id="btnReload">REC.</button>
+        <button class="touch-btn btn-small" id="btnWeapon">ARMA</button>
+        <button class="touch-btn btn-small" id="btnDash">ESQUIVA</button>
+      </div>
+      <button class="touch-btn btn-fire" id="btnFire">ATIRAR</button>
+    </div>
+  </div>
+
+  <div id="menuOverlay" class="overlay">
+    <div class="card">
+      <div class="title-row">
+        <h1 id="menuTitle">🔥 ZONA DE FOGO</h1>
+        <span class="tag">BR & CS</span>
+      </div>
+      <p class="subtitle" id="menuSubtitle">
+        Arena tática com luz, sombras, recuo de tiro, zona segura no BR e rodadas no CS. Arraste na tela para mirar ou use a mira assistida.
+      </p>
+
+      <div class="section-label">Modo de Jogo</div>
+      <div class="grid-2">
+        <button class="choice-btn active" data-mode="BR" id="modeBR">
+          MODO BR
+          <small>Zona fechando • Último vivo</small>
+        </button>
+        <button class="choice-btn" data-mode="CS" id="modeCS">
+          MODO CS
+          <small>4v4 em rodadas • Ação rápida</small>
+        </button>
+      </div>
+
+      <div class="section-label">Skin do Operador</div>
+      <div class="grid-4" id="skinGrid">
+        <button class="choice-btn active" data-skin="ouro">
+          <div class="skin-swatch" style="background:#f59e0b;"></div>
+          Ouro
+        </button>
+        <button class="choice-btn" data-skin="sombra">
+          <div class="skin-swatch" style="background:#38bdf8;"></div>
+          Ciano
+        </button>
+        <button class="choice-btn" data-skin="crimson">
+          <div class="skin-swatch" style="background:#ef4444;"></div>
+          Carmim
+        </button>
+        <button class="choice-btn" data-skin="esmeralda">
+          <div class="skin-swatch" style="background:#10b981;"></div>
+          Tático
+        </button>
+      </div>
+
+      <div class="section-label">Sensibilidade (Sense)</div>
+      <div class="slider-box">
+        <div class="slider-top">
+          <span>Velocidade de Mira & Rotação</span>
+          <span id="senseValue">100%</span>
+        </div>
+        <input type="range" id="senseSlider" min="40" max="220" value="100" />
+      </div>
+
+      <div class="toggle-row">
+        <span>Mira Assistida ao Atirar (ajuda no celular)</span>
+        <input type="checkbox" id="assistToggle" checked />
+      </div>
+
+      <button class="play-btn" id="btnStart">ENTRAR NA PARTIDA</button>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const menuOverlay = document.getElementById("menuOverlay");
+    const menuTitle = document.getElementById("menuTitle");
+    const menuSubtitle = document.getElementById("menuSubtitle");
+    const hud = document.getElementById("hud");
+    const hudStatus = document.getElementById("hudStatus");
+    const hpLabel = document.getElementById("hpLabel");
+    const ammoLabel = document.getElementById("ammoLabel");
+    const hpFill = document.getElementById("hpFill");
+    const senseSlider = document.getElementById("senseSlider");
+    const senseValue = document.getElementById("senseValue");
+    const btnSenseQuick = document.getElementById("btnSenseQuick");
+    const assistToggle = document.getElementById("assistToggle");
+    const toastEl = document.getElementById("toast");
+
+    const SKINS = {
+      ouro: { body: "#f59e0b", vest: "#78350f", laser: "rgba(251, 191, 36, 0.35)" },
+      sombra: { body: "#38bdf8", vest: "#0c4a6e", laser: "rgba(56, 189, 248, 0.35)" },
+      crimson: { body: "#ef4444", vest: "#7f1d1d", laser: "rgba(248, 113, 113, 0.35)" },
+      esmeralda: { body: "#10b981", vest: "#064e3b", laser: "rgba(52, 211, 153, 0.35)" }
+    };
+
+    const WEAPONS = [
+      { name: "RIFLE AR", mag: 30, fireRate: 0.13, spread: 0.05, recoil: 4.5, dmg: 22, speed: 780, pellets: 1 },
+      { name: "ESCOPETA", mag: 8, fireRate: 0.52, spread: 0.22, recoil: 11, dmg: 15, speed: 690, pellets: 6 },
+      { name: "SMG RÁPIDA", mag: 40, fireRate: 0.08, spread: 0.09, recoil: 3.2, dmg: 15, speed: 820, pellets: 1 }
+    ];
+
+    let selectedMode = "BR";
+    let selectedSkin = "ouro";
+    let senseFactor = 1.0;
+    let aimAssist = true;
+
+    const WORLD_SIZE = 2100;
+    let obstacles = [];
+    let player = null;
+    let bots = [];
+    let bullets = [];
+    let particles = [];
+    let medkits = [];
+    let zone = { x: WORLD_SIZE / 2, y: WORLD_SIZE / 2, r: 1200, minR: 150, shrinkSpeed: 12 };
+    let csRound = 1;
+    let csPlayerWins = 0;
+    let csBotWins = 0;
+    let kills = 0;
+    let running = false;
+    let lastTime = 0;
+    let cameraShake = 0;
+
+    const keys = {};
+    let firing = false;
+    let joyTouchId = null;
+    let joyVec = { x: 0, y: 0 };
+    let aimTouchId = null;
+    let lastAimPos = null;
+    let mouseDown = false;
+
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toastEl.classList.remove("show"), 1500);
+    }
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    document.querySelectorAll("[data-mode]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-mode]").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedMode = btn.dataset.mode;
+      });
+    });
+
+    document.querySelectorAll("[data-skin]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-skin]").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedSkin = btn.dataset.skin;
+      });
+    });
+
+    function updateSense(val) {
+      const num = Number(val);
+      senseFactor = num / 100;
+      senseSlider.value = num;
+      senseValue.textContent = `${num}%`;
+      btnSenseQuick.textContent = `Sense: ${num}%`;
+    }
+
+    senseSlider.addEventListener("input", e => updateSense(e.target.value));
+    btnSenseQuick.addEventListener("click", () => {
+      const next = senseFactor >= 1.8 ? 80 : Math.round((senseFactor + 0.3) * 100);
+      updateSense(next);
+      showToast(`Sensibilidade ajustada para ${next}%`);
+    });
+
+    assistToggle.addEventListener("change", e => {
+      aimAssist = e.target.checked;
+    });
+
+    function generateMap() {
+      obstacles = [];
+      medkits = [];
+      const count = selectedMode === "BR" ? 26 : 14;
+      for (let i = 0; i < count; i++) {
+        const w = 70 + Math.random() * 110;
+        const h = 70 + Math.random() * 110;
+        const x = 220 + Math.random() * (WORLD_SIZE - 440 - w);
+        const y = 220 + Math.random() * (WORLD_SIZE - 440 - h);
+        if (Math.hypot(x + w / 2 - WORLD_SIZE / 2, y + h / 2 - WORLD_SIZE / 2) > 190) {
+          obstacles.push({ x, y, w, h, type: i % 3 === 0 ? "cover" : "wall" });
+        }
+      }
+      for (let i = 0; i < 12; i++) {
+        medkits.push({
+          x: 260 + Math.random() * (WORLD_SIZE - 520),
+          y: 260 + Math.random() * (WORLD_SIZE - 520),
+          active: true,
+          respawn: 0
+        });
+      }
+    }
+
+    function createFighter(x, y, isPlayer, team = "A") {
+      const mags = WEAPONS.map(w => w.mag);
+      return {
+        x, y, r: 17, angle: 0, hp: 100, maxHp: 100,
+        speed: isPlayer ? 225 : 175,
+        isPlayer, team,
+        skin: isPlayer ? selectedSkin : ["crimson", "sombra", "esmeralda"][Math.floor(Math.random() * 3)],
+        weaponIdx: 0, mags, reloading: 0, fireCooldown: 0,
+        dashCooldown: 0, dashTime: 0, recoilOffset: 0,
+        aiDirTimer: 0, aiMoveAngle: Math.random() * Math.PI * 2
+      };
+    }
+
+    function setupMatch(resetTotals = true) {
+      if (resetTotals) {
+        kills = 0;
+        csRound = 1;
+        csPlayerWins = 0;
+        csBotWins = 0;
+      }
+
+      generateMap();
+      bullets = [];
+      particles = [];
+      cameraShake = 0;
+
+      if (selectedMode === "BR") {
+        zone = { x: WORLD_SIZE / 2, y: WORLD_SIZE / 2, r: 1180, minR: 130, shrinkSpeed: 14 };
+        player = createFighter(WORLD_SIZE / 2 - 260, WORLD_SIZE / 2, true, "SOLO");
+        bots = [];
+        for (let i = 0; i < 7; i++) {
+          const ang = (i / 7) * Math.PI * 2;
+          const bx = WORLD_SIZE / 2 + Math.cos(ang) * 520;
+          const by = WORLD_SIZE / 2 + Math.sin(ang) * 520;
+          bots.push(createFighter(bx, by, false, "BOT_" + i));
+        }
+      } else {
+        zone = { x: WORLD_SIZE / 2, y: WORLD_SIZE / 2, r: 860, minR: 860, shrinkSpeed: 0 };
+        player = createFighter(WORLD_SIZE / 2 - 420, WORLD_SIZE / 2, true, "A");
+        bots = [
+          createFighter(WORLD_SIZE / 2 - 460, WORLD_SIZE / 2 - 90, false, "A"),
+          createFighter(WORLD_SIZE / 2 - 460, WORLD_SIZE / 2 + 90, false, "A"),
+          createFighter(WORLD_SIZE / 2 - 380, WORLD_SIZE / 2 + 160, false, "A"),
+          createFighter(WORLD_SIZE / 2 + 420, WORLD_SIZE / 2 - 120, false, "B"),
+          createFighter(WORLD_SIZE / 2 + 420, WORLD_SIZE / 2, false, "B"),
+          createFighter(WORLD_SIZE / 2 + 420, WORLD_SIZE / 2 + 120, false, "B"),
+          createFighter(WORLD_SIZE / 2 + 470, WORLD_SIZE / 2 + 60, false, "B")
+        ];
+      }
+    }
+
+    document.getElementById("btnStart").addEventListener("click", () => {
+      setupMatch(true);
+      menuOverlay.classList.add("hidden");
+      hud.classList.remove("hidden");
+      running = true;
+      lastTime = performance.now();
+      showToast(selectedMode === "BR" ? "Modo BR iniciado! Fique dentro da zona." : `CS Rodada ${csRound} iniciada!`);
+      requestAnimationFrame(loop);
+    });
+
+    document.getElementById("btnMenu").addEventListener("click", () => {
+      running = false;
+      hud.classList.add("hidden");
+      menuOverlay.classList.remove("hidden");
+      menuTitle.textContent = "🔥 ZONA DE FOGO";
+      menuSubtitle.textContent = "Escolha seu modo, skin e sensibilidade para entrar na arena.";
+    });
+
+    // Controles Touch
+    const joyZone = document.getElementById("joyZone");
+    const joyKnob = document.getElementById("joyKnob");
+
+    joyZone.addEventListener("touchstart", e => {
+      e.preventDefault();
+      const t = e.changedTouches[0];
+      joyTouchId = t.identifier;
+      updateJoystick(t);
+    }, { passive: false });
+
+    joyZone.addEventListener("touchmove", e => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        if (t.identifier === joyTouchId) updateJoystick(t);
+      }
+    }, { passive: false });
+
+    function resetJoystick() {
+      joyTouchId = null;
+      joyVec = { x: 0, y: 0 };
+      joyKnob.style.transform = "translate(0px, 0px)";
+    }
+
+    joyZone.addEventListener("touchend", e => {
+      for (const t of e.changedTouches) {
+        if (t.identifier === joyTouchId) resetJoystick();
+      }
+    });
+    joyZone.addEventListener("touchcancel", resetJoystick);
+
+    function updateJoystick(touch) {
+      const rect = joyZone.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const maxR = rect.width * 0.36;
+      let dx = touch.clientX - cx;
+      let dy = touch.clientY - cy;
+      const dist = Math.hypot(dx, dy);
+      if (dist > maxR) {
+        dx = (dx / dist) * maxR;
+        dy = (dy / dist) * maxR;
+      }
+      joyKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+      joyVec.x = dx / maxR;
+      joyVec.y = dy / maxR;
+    }
+
+    // Arrastar na tela para girar mira (com sense)
+    canvas.addEventListener("touchstart", e => {
